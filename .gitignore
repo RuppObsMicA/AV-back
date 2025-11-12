@@ -43,3 +43,9 @@ build/
 tmp/
 temp/
 
+# ESLint cache
+.eslintcache
+
+# Prettier cache
+.prettier-cache
+
