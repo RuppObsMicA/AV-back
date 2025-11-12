@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  maildev:
+    image: maildev/maildev:latest
+    container_name: maildev
+    ports:
+      - '1025:1025' # SMTP порт
+      - '1080:1080' # Web интерфейс
+    restart: unless-stopped
+    environment:
+      - MAILDEV_WEB_PORT=1080
+      - MAILDEV_SMTP_PORT=1025
+    networks:
+      - maildev-network
+
+networks:
+  maildev-network:
+    driver: bridge
+

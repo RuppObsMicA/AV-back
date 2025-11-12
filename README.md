@@ -355,6 +355,18 @@ av-backend/
 - **Maildev** - локальный SMTP сервер для тестирования email
 - **Nodemailer** - отправка email
 
+## 🚂 Деплой на Railway
+
+Для деплоя на Railway.com с Maildev см. подробные инструкции в [RAILWAY.md](./RAILWAY.md)
+
+**Краткая инструкция:**
+
+1. Создайте проект на Railway
+2. Добавьте сервис бэкенда (GitHub Repo)
+3. Добавьте сервис Maildev (Empty Service → Dockerfile.maildev)
+4. Настройте переменные окружения
+5. Установите `MAILDEV_HOST=maildev.railway.internal` в бэкенде
+
 ## 📝 Лицензия
 
 ISC

@@ -6,27 +6,35 @@ const nodemailer = require('nodemailer');
  * В продакшене использует реальный SMTP сервер
  */
 const createTransporter = () => {
-  const isDevelopment = process.env.NODE_ENV !== 'production';
-
-  if (isDevelopment) {
-    // Maildev для разработки (не требует аутентификации)
+  // Если указан MAILDEV_HOST, используем Maildev (для разработки или отдельного деплоя)
+  if (process.env.MAILDEV_HOST) {
     return nodemailer.createTransport({
-      host: process.env.MAILDEV_HOST || 'localhost',
-      port: process.env.MAILDEV_PORT || 1025,
+      host: process.env.MAILDEV_HOST,
+      port: parseInt(process.env.MAILDEV_PORT || '1025', 10),
       secure: false, // Maildev не использует SSL
       auth: false, // Maildev не требует аутентификации
     });
   }
 
   // Продакшен конфигурация (используйте реальный SMTP)
+  if (process.env.SMTP_HOST) {
+    return nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '587', 10),
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+  }
+
+  // Fallback на localhost Maildev для разработки
   return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587', 10),
-    secure: process.env.SMTP_SECURE === 'true',
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
+    host: 'localhost',
+    port: 1025,
+    secure: false,
+    auth: false,
   });
 };
 
