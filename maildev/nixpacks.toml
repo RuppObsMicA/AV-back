@@ -1,0 +1,11 @@
+# Nixpacks конфигурация для Railway
+# Если Dockerfile не работает, Railway попробует использовать эту конфигурацию
+[phases.setup]
+nixPkgs = ["nodejs-18_x"]
+
+[phases.install]
+cmds = ["npm install -g maildev"]
+
+[start]
+cmd = "maildev"
+
