@@ -1,0 +1,24 @@
+# Development Dockerfile for NestJS Application
+# This file is optimized for fast development with hot reload
+
+# Use Node.js 20 Alpine for smaller image size
+FROM node:20-alpine
+
+# Set working directory inside container
+WORKDIR /app
+
+# Copy package files first (for better Docker layer caching)
+# If package.json doesn't change, npm install won't run again
+COPY package*.json ./
+
+# Install ALL dependencies (including devDependencies for development)
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose the development port (from .development.env)
+EXPOSE 5000
+
+# Run the application in development mode with hot reload
+CMD ["npm", "run", "start:dev"]
