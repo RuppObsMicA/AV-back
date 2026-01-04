@@ -8,9 +8,10 @@ import { Role } from "./roles/roles.model";
 import { UserRoles } from "./roles/user-roles.model";
 import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
+import { AppController } from './app.controller';
 
 @Module({
-    // controllers: [AuthController],
+    controllers: [AppController],
     providers: [],
     imports: [
         ConfigModule.forRoot({

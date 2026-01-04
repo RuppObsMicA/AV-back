@@ -6,7 +6,7 @@ npm-debug.log
 dist
 build
 
-# Environment files (will be provided via docker-compose)
+# Environment files (will be provided via environment variables)
 .env
 .development.env
 .production.env
@@ -33,6 +33,10 @@ Dockerfile.dev
 docker-compose.yml
 .dockerignore
 
+# Documentation
+*.md
+!README.md
+
 # Logs
 logs
 *.log
@@ -40,3 +44,6 @@ logs
 # Temporary files
 tmp
 temp
+
+# CI/CD
+.github
