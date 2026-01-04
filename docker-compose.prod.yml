@@ -1,0 +1,54 @@
+# Docker Compose for Testing Production Build Locally
+# DO NOT use this in actual production - use a proper hosting service
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: nest-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: productionpassword
+      POSTGRES_DB: nest-course
+    ports:
+      - "5434:5432"  # Different port to avoid conflict with dev
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Production Dockerfile
+    container_name: nest-app-prod
+    restart: unless-stopped
+    ports:
+      - "7000:7000"  # Production port
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: productionpassword
+      POSTGRES_DB: nest-course
+      POSTGRES_PORT: 5432
+      PORT: 7000
+      NODE_ENV: production
+      PRIVATE_KEY: production-secret-key-change-this-in-real-deployment
+      MAIL_HOST: localhost
+      MAIL_PORT: 1025
+      MAIL_USER: ''
+      MAIL_PASSWORD: ''
+      MAIL_FROM: noreply@yourapp.com
+      FRONTEND_URL: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_prod_data:
+    driver: local

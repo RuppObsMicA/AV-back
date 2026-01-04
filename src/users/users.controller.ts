@@ -6,7 +6,6 @@ import { User } from './users.model';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.quard';
 import { AddRoleDto } from './dto/add-role.dto';
-import { BanUserDto } from './dto/ban-user.dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 
 @ApiTags('Users')
@@ -32,21 +31,12 @@ export class UsersController {
         return this.usersService.getAllUsers();
     }
 
-    @ApiOperation({summary: 'Get a role'})
+    @ApiOperation({summary: 'Add a role'})
     @ApiResponse({status: 200})
     @Roles('ADMIN')
     @UseGuards(RolesGuard)
     @Post('/role')
     addRole(@Body() dto: AddRoleDto) {
         return this.usersService.addRole(dto);
-    }
-
-    @ApiOperation({summary: 'Ban a user'})
-    @ApiResponse({status: 200})
-    @Roles('ADMIN')
-    @UseGuards(RolesGuard)
-    @Post('/ban')
-    ban(@Body() dto: BanUserDto) {
-        return this.usersService.ban(dto);
     }
 }
