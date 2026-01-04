@@ -1,34 +1,23 @@
-# Fly.io configuration file
-# Learn more: https://fly.io/docs/reference/configuration/
+# fly.toml app configuration file generated for av-back on 2026-01-04T16:10:38Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "nest-api"  # Change this to your desired app name
-primary_region = "ams"  # Amsterdam - closest to Europe, change if needed
+app = 'av-back'
+primary_region = 'cdg'
 
 [build]
-  # Use the production Dockerfile
-  dockerfile = "Dockerfile"
-
-[env]
-  NODE_ENV = "production"
-  PORT = "7000"
 
 [http_service]
-  internal_port = 7000
+  internal_port = 3000
   force_https = true
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 0  # Scale to zero when not used (free tier)
-  processes = ["app"]
-
-  # Health check configuration
-  [[http_service.checks]]
-    interval = "30s"
-    timeout = "5s"
-    grace_period = "10s"
-    method = "GET"
-    path = "/api/v1/health"
+  min_machines_running = 0
+  processes = ['app']
 
 [[vm]]
-  memory = "256mb"  # Free tier
-  cpu_kind = "shared"
+  memory = '1gb'
+  cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 256
