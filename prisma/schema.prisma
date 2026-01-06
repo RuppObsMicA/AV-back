@@ -1,0 +1,100 @@
+// Prisma Schema for NestJS Application
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String?
+
+  // Authentication
+  provider  String   @default("email")
+  socialId  String?
+
+  // Profile
+  firstName String?
+  lastName  String?
+  dateBirth DateTime? @db.Date
+  photoId   String?
+
+  // Email verification
+  newEmail             String?
+  confirmationHash     String?   @unique
+  confirmationExpires  DateTime?
+
+  // Account status
+  status    UserStatus @default(pending)
+  banned    Boolean    @default(false)
+  banReason String?
+
+  // Two-factor authentication
+  isTwoFAEnabled Boolean @default(false)
+
+  // Foreign keys (for future relations)
+  directoryId       Int?
+  organizationId    Int?
+  inputLanguageId   Int?
+  outputLanguageId  Int?
+  departmentId      Int?
+  statusId          Int?
+  subscribePlanId   Int?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? // Soft delete support
+
+  // Relations
+  roles     UserRole[]
+
+  @@map("users")
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  value       String   @unique
+  description String
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  users       UserRole[]
+
+  @@map("roles")
+}
+
+// Junction table for many-to-many relationship
+model UserRole {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  roleId    Int
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  // Ensure user can't have same role twice
+  @@unique([userId, roleId])
+  @@map("user-roles")
+}
+
+// Enum for user status
+enum UserStatus {
+  pending
+  active
+  banned
+}
