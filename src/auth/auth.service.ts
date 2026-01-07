@@ -11,7 +11,7 @@ import { ConfirmationRequestDto } from './dto/confirmation-request.dto';
 import { ForgotPasswordRequestDto } from './dto/forgot-password-request.dto';
 import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
 import { ForgotPasswordResponseDto } from './dto/forgot-password-response.dto';
-import { MailService } from 'src/mail/mail.service';
+import { MailerService } from 'src/mailer/mailer.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { randomBytes } from 'crypto';
 
@@ -34,7 +34,7 @@ export class AuthService {
     constructor(
         private userService: UsersService,
         private jwtService: JwtService,
-        private mailService: MailService,
+        private mailerService: MailerService,
         private prisma: PrismaService
     ) {}
 
@@ -144,7 +144,7 @@ export class AuthService {
                 }
             });
 
-            await this.mailService.sendConfirmationEmail(dto.email, confirmationHash);
+            await this.mailerService.sendConfirmationEmail(dto.email, confirmationHash);
 
             return {
                 message: 'Confirmation email sent. Please check your inbox.',
@@ -163,7 +163,7 @@ export class AuthService {
         });
 
         console.log('Created pending user:', { id: createdUser.id, email: createdUser.email });
-        await this.mailService.sendConfirmationEmail(dto.email, confirmationHash);
+        await this.mailerService.sendConfirmationEmail(dto.email, confirmationHash);
 
         return {
             message: 'Confirmation email sent. Please check your inbox.',
@@ -229,7 +229,7 @@ export class AuthService {
             }
         });
 
-        await this.mailService.sendPasswordResetEmail(dto.email, resetHash);
+        await this.mailerService.sendPasswordResetEmail(dto.email, resetHash);
 
         return {
             message: 'If the email exists, a password reset link has been sent.',

@@ -1,8 +1,8 @@
-import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { Observable } from "rxjs";
-import { ROLES_KEY } from "./roles-auth.decorator";
+import { ROLES_KEY } from "../decorators/roles.decorator";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -39,8 +39,8 @@ export class RolesGuard implements CanActivate {
 
             req.user = user;
             return user.roles.some(role => requiredRoles.includes(role.value));
-        } catch {
-            throw new HttpException('Forbidden', HttpStatus.FORBIDDEN )
+        } catch (error) {
+            throw new ForbiddenException('Access denied: insufficient permissions');
         }
     }
 }

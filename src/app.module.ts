@@ -13,7 +13,7 @@ import { PrismaModule } from './prisma/prisma.module';
         ConfigModule.forRoot({
             envFilePath: `.${process.env.NODE_ENV}.env`,
         }),
-        PrismaModule, // Prisma replaces Sequelize
+        PrismaModule,
         UsersModule,
         RolesModule,
         AuthModule,
