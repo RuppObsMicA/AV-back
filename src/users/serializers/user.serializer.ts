@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 
-// Type for User with included relations (roles)
+// Type for User with included relations (roles and languages)
 type UserWithRoles = User & {
     roles?: Array<{
         role: {
@@ -9,6 +9,16 @@ type UserWithRoles = User & {
             description: string;
         };
     }>;
+    inputLanguage?: {
+        id: number;
+        name: string;
+        code: string;
+    } | null;
+    outputLanguage?: {
+        id: number;
+        name: string;
+        code: string;
+    } | null;
 };
 
 export class UserSerializer {
@@ -35,8 +45,8 @@ export class UserSerializer {
             directoryId: user.directoryId,
             organization: null, // TODO: will be loaded from related table
             photo: null,        // TODO: will be loaded from related table
-            inputLanguage: null, // TODO: will be loaded from related table
-            outputLanguage: null, // TODO: will be loaded from related table
+            inputLanguage: user.inputLanguage || null,
+            outputLanguage: user.outputLanguage || null,
             department: null,    // TODO: will be loaded from related table
             status: user.status,
             role: firstRole,

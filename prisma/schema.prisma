@@ -5,10 +5,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator erd {
-  provider = "prisma-erd-generator"
-  output   = "../ERD.svg"
-}
+// Temporarily disabled due to compatibility issue
+// generator erd {
+//   provider = "prisma-erd-generator"
+//   output   = "../ERD.svg"
+// }
 
 datasource db {
   provider = "postgresql"
@@ -58,7 +59,9 @@ model User {
   deletedAt DateTime? // Soft delete support
 
   // Relations
-  roles     UserRole[]
+  roles           UserRole[]
+  inputLanguage   Language? @relation("UserInputLanguage", fields: [inputLanguageId], references: [id], onDelete: SetNull)
+  outputLanguage  Language? @relation("UserOutputLanguage", fields: [outputLanguageId], references: [id], onDelete: SetNull)
 
   @@map("users")
 }
@@ -76,6 +79,19 @@ model Role {
   users       UserRole[]
 
   @@map("roles")
+}
+
+model Language {
+  id        Int      @id @default(autoincrement())
+  name      String
+  code      String   @unique
+  direction String
+
+  // Relations (back-references from User)
+  usersAsInput  User[] @relation("UserInputLanguage")
+  usersAsOutput User[] @relation("UserOutputLanguage")
+
+  @@map("languages")
 }
 
 // Junction table for many-to-many relationship

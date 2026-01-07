@@ -25,6 +25,8 @@ export class UsersService {
             data: {
                 email: userDto.email,
                 password: userDto.password,
+                inputLanguageId: 1,   // Default: English
+                outputLanguageId: 1,  // Default: English
                 roles: {
                     create: {
                         roleId: role.id,
@@ -37,6 +39,8 @@ export class UsersService {
                         role: true,
                     },
                 },
+                inputLanguage: true,
+                outputLanguage: true,
             },
         });
 
@@ -51,6 +55,8 @@ export class UsersService {
                         role: true,
                     },
                 },
+                inputLanguage: true,
+                outputLanguage: true,
             },
         });
         return users;
@@ -65,6 +71,8 @@ export class UsersService {
                         role: true,
                     },
                 },
+                inputLanguage: true,
+                outputLanguage: true,
             },
         });
         return user;
@@ -105,6 +113,8 @@ export class UsersService {
                 confirmationHash: data.confirmationHash,
                 confirmationExpires: data.confirmationExpires,
                 status: 'pending',
+                inputLanguageId: 1,   // Default: English
+                outputLanguageId: 1,  // Default: English
                 roles: {
                     create: {
                         roleId: role.id,
@@ -117,6 +127,8 @@ export class UsersService {
                         role: true,
                     },
                 },
+                inputLanguage: true,
+                outputLanguage: true,
             },
         });
 
@@ -132,6 +144,8 @@ export class UsersService {
                         role: true,
                     },
                 },
+                inputLanguage: true,
+                outputLanguage: true,
             },
         });
         return user;
