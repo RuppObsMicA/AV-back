@@ -60,10 +60,28 @@ model User {
 
   // Relations
   roles           UserRole[]
+  posts           Post[]
   inputLanguage   Language? @relation("UserInputLanguage", fields: [inputLanguageId], references: [id], onDelete: SetNull)
   outputLanguage  Language? @relation("UserOutputLanguage", fields: [outputLanguageId], references: [id], onDelete: SetNull)
 
   @@map("users")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  imageUrl  String?  // Path to uploaded image file (optional)
+
+  // Foreign key - who created this post
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("posts")
 }
 
 model Role {

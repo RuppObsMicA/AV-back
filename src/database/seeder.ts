@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -85,6 +86,35 @@ async function main() {
                 console.log(`✅ Language "${languageData.name}" (${languageData.code}) created with ID ${languageData.id}`);
             } else {
                 console.log(`⏭️  Language "${languageData.name}" already exists, skipping`);
+            }
+        }
+
+        // 3. Seed default users
+        console.log('\n👤 Seeding default users...');
+        const defaultUsers = [
+            { email: 'admin@admin.com', password: 'admin123', role: 'ADMIN' },
+            { email: 'user1@test.com', password: 'user1123', role: 'normal' },
+            { email: 'user2@test.com', password: 'user2123', role: 'normal' },
+        ];
+
+        for (const userData of defaultUsers) {
+            const existing = await prisma.user.findUnique({ where: { email: userData.email } });
+
+            if (!existing) {
+                const hashedPassword = await bcrypt.hash(userData.password, 5);
+                const role = await prisma.role.findUnique({ where: { value: userData.role } });
+
+                await prisma.user.create({
+                    data: {
+                        email: userData.email,
+                        password: hashedPassword,
+                        status: 'active', // skip email confirmation for seed users
+                        roles: { create: { roleId: role!.id } },
+                    },
+                });
+                console.log(`✅ User created: ${userData.email} / ${userData.password}`);
+            } else {
+                console.log(`⏭️  User "${userData.email}" already exists, skipping`);
             }
         }
 

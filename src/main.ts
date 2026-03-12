@@ -3,10 +3,18 @@ import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 import { ValidationPipe } from "./common/pipes/validation.pipe";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { join } from "path";
 
 async function start() {
     const PORT = process.env.PORT || 5000;
-    const app = await NestFactory.create(AppModule);
+    // NestExpressApplication gives us access to Express-specific methods like useStaticAssets
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+    // Serve files from the ./uploads folder as static files at /uploads URL path.
+    // Example: a file saved as ./uploads/1710000000.jpg will be accessible at:
+    // http://localhost:5000/uploads/1710000000.jpg
+    app.useStaticAssets(join(__dirname, '..', 'uploads'), { prefix: '/uploads' });
 
     // Enable CORS for local development
     app.enableCors({
@@ -24,6 +32,8 @@ async function start() {
         .setDescription('REST API documentation')
         .setVersion('1.0.0')
         .addTag('Nest')
+        // Adds "Authorize" button in Swagger UI so you can test JWT-protected routes
+        .addBearerAuth()
         .build();
 
     const document = SwaggerModule.createDocument(app, config);
